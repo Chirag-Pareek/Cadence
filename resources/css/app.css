@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cadence — A Minimalist Habit Engine & Consistency Architecture */
+/* Global smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Paint seal completion animation */
+@keyframes paintSeal {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Ripple effect for habit completion */
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(204, 120, 92, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 12px rgba(204, 120, 92, 0);
+    }
+}
+
+/* Apply paint seal animation to checked items */
+.paint-seal-enter {
+    animation: paintSeal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Subtle canvas texture overlay for sections */
+.canvas-texture {
+    position: relative;
+}
+
+.canvas-texture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/canvas_texture.jpg');
+    background-size: 400px;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f0e8;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e6dfd8;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #cc785c;
+}
+
+/* Focus styles */
+*:focus-visible {
+    outline: 2px solid #cc785c;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Alpine x-cloak */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Transition utilities for Livewire */
+.transition-card {
+    @apply transition-all duration-500 ease-out;
+}
+
+.transition-card:hover {
+    @apply -translate-y-1 shadow-xl;
+}
