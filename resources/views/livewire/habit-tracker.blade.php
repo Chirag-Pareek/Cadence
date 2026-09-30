@@ -98,18 +98,23 @@
                             @for ($j = 0; $j < $month_days; $j++)
                             <td class="px-1 py-2 text-center min-w-10" id="habit-{{ $j }}">
                                 @php
-                                    $isCompleted = $habit->completions->contains('completed_at', now()->startOfMonth()->addDays($j));
-                                    $isPast = $j + 1 < now()->day;
+                                    $cellDateStr = now()->startOfMonth()->addDays($j)->format('Y-m-d');
+                                    $isCompleted = $habit->completions->contains(function ($c) use ($cellDateStr) {
+                                        $val = is_string($c->completed_at) ? $c->completed_at : (is_object($c->completed_at) ? $c->completed_at->format('Y-m-d') : (string)$c->completed_at);
+                                        return str_starts_with($val, $cellDateStr);
+                                    });
                                     $isToday = $j + 1 == now()->day;
                                 @endphp
                                 <button
+                                    type="button"
+                                    wire:key="habit-cell-{{ $habit->id }}-{{ $j }}"
                                     wire:click="toggle({{ $habit->id }}, {{ $j }})"
-                                    {{ $isPast ? 'disabled' : '' }}
-                                    class="inline-flex items-center justify-center w-7 h-7 transition-all duration-300 rounded-full {{ $isCompleted ? 'scale-100' : 'scale-90 hover:scale-100' }} {{ $isPast && !$isCompleted ? 'opacity-30' : '' }} {{ $isToday ? 'ring-2 ring-coral/30' : '' }}"
-                                    style="{{ $isCompleted ? 'background-color: ' . $habit->color . ';' : 'background-color: transparent; border: 2px solid #e6dfd8;' }}"
+                                    class="inline-flex items-center justify-center w-8 h-8 transition-all duration-200 rounded-full cursor-pointer hover:scale-110 active:scale-95 {{ $isCompleted ? 'scale-100 shadow-sm' : 'scale-90 hover:border-coral' }} {{ $isToday ? 'ring-2 ring-coral ring-offset-2' : '' }}"
+                                    style="{{ $isCompleted ? 'background-color: ' . $habit->color . '; border: none;' : 'background-color: transparent; border: 2px solid #e6dfd8;' }}"
+                                    title="{{ $habit->name }} - {{ now()->startOfMonth()->addDays($j)->format('M d') }}"
                                 >
                                     @if($isCompleted)
-                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     @endif
                                 </button>
                             </td>

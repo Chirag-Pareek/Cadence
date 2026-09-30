@@ -4,7 +4,13 @@
 // Vercel Serverless PHP Entrypoint for Laravel + Livewire
 // ──────────────────────────────────────────────────────
 
-// 1. Create required /tmp directories
+// 1. Configure HTTPS detection for reverse proxies (Vercel)
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = 443;
+}
+
+// 2. Create required /tmp directories
 $dirs = [
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',

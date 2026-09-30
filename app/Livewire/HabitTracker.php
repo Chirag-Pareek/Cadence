@@ -52,18 +52,29 @@ class HabitTracker extends Component
 
     public function toggle($habitId, $day)
     {
-        $datetime = now()->startOfMonth()->addDays($day);
+        if (!auth()->check()) {
+            return;
+        }
 
-        $habit = Habit::find($habitId);
-        $completion = $habit->completions()->where('completed_at', $datetime)->first();
+        $targetDate = now()->startOfMonth()->addDays($day)->format('Y-m-d');
+
+        $habit = auth()->user()->habits()->find($habitId);
+        if (!$habit) {
+            return;
+        }
+
+        $completion = $habit->completions()->whereDate('completed_at', $targetDate)->first();
 
         if ($completion) {
             $completion->delete();
         } else {
             $habit->completions()->create([
-                'completed_at' => $datetime,
+                'completed_at' => $targetDate,
             ]);
         }
+
+        // Refresh habits with updated completions so UI reflects changes immediately
+        $this->habits = auth()->user()->habits()->with('completions')->get();
     }
 
     public function logout()
